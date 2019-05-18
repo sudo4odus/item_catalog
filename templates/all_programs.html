@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>All Udacity programs</title>
+</head>
+
+<body>
+    {% for program in programs %}
+    <div>
+        <ul>
+            <li>
+                <h1>
+                    <a href="#">
+                        &emsp; {{program.title}} &emsp;
+                    </a>
+                </h1>
+            </li>
+        </ul>
+    </div>
+    {% endfor %}
+</body>
+
+</html>
