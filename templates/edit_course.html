@@ -49,7 +49,7 @@
             </div>
         </div>
     </nav>
-    <div class="row" style="margin-left: 15px">
+    <div class="row h-100 justify-content-center align-items-center" style="margin-top: 50px">
         <div class="col-md-8">
             <h3> Edit {{course.title}} course </h3>
 
@@ -79,7 +79,8 @@
                         {% endfor %}
                     </select>
                 </fieldset>
-                <input type="submit" value="submit" class="btn btn-primary">
+                <input type="submit" value="submit" class="btn btn-primary" style="margin-right: 50px">
+                <a href="{{url_for('display_course_information', program_id = course.program_id ,course_title = course.title )}}" class="btn btn-secondary">Cancel</a>
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 {% for message in messages %}
@@ -90,3 +91,5 @@
             </form>
         </div>
     </div>
+    </body>
+</html>

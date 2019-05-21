@@ -147,7 +147,24 @@ def edit_course(program_id,course_id):
 @app.route('/catalog/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
 @app.route('/programs/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
 def delete_course(program_id,course_id):
-    return 'not yet'
+    session = Session()
+    # Check if the user is logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+    # Select the targeted course
+    course = session.query(Courses).filter_by(id=course_id).first()
+    # Check if logged in user is the creator of course
+    if course.user_id != login_session['user_id']:
+        flash('You are not the author of this course!')
+        return redirect('/login')
+    if request.method == 'GET':
+        return render_template('delete_course.html', course=course)
+    else:
+        program = session.query(Programs).filter_by(id=course.program_id).first()
+        session.delete(course)
+        session.commit()
+        #Session.remove()
+        return redirect(url_for('display_program_courses', program_title=program.title))
 
 
 @app.route('/login')
@@ -186,13 +203,6 @@ def create_user(login_session):
     user = session.query(Users).filter_by(email=login_session['email']).first()
     Session.remove()
     return user.id
-
-
-def get_user(user_id):
-    session = Session()
-    user = session.query(Users).filter_by(id=user_id).first()
-    Session.remove()
-    return user
 
 
 def get_user_id(email):
