@@ -27,7 +27,8 @@ session_factory = sessionmaker(bind=engine)
 Session = scoped_session(session_factory)
 
 # The client_id of our google API credentials
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
+    'web']['client_id']
 
 # Display the root page, we display all disponible porgrams
 @app.route('/')
@@ -70,7 +71,7 @@ def display_course_information(program_id, course_title):
     course = session.query(Courses).filter_by(title=course_title).first()
     # Close the connection
     Session.remove()
-    return render_template('course.html', title=course.title, description=course.description)
+    return render_template('course.html', course=course)
 
 # Create a new course after login
 @app.route('/catalog/new_course', methods=['GET', 'POST'])
@@ -96,18 +97,57 @@ def create_new_course():
             flash('Select the program of the course please!')
             return redirect(url_for('create_new_course'))
 
-        # Add Book
+        # Add course
         new_course = Courses(
-                       title=request.form['title'],
-                       description=request.form['description'],
-                       program_id=request.form['program_id'],
-                       user_id=login_session['user_id'])
+            title=request.form['title'],
+            description=request.form['description'],
+            program_id=request.form['program_id'],
+            user_id=login_session['user_id'])
         session.add(new_course)
         session.commit()
         # Display the program courses of the new course
-        program = session.query(Programs).filter_by(id=request.form['program_id']).first()
+        program = session.query(Programs).filter_by(
+            id=request.form['program_id']).first()
         Session.remove()
         return redirect(url_for('display_program_courses', program_title=program.title))
+
+# Edit a course created by the current user
+@app.route('/catalog/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
+@app.route('/programs/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
+def edit_course(program_id,course_id):
+    session = Session()
+    # Check if the user is logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+    # Select the targeted course
+    course = session.query(Courses).filter_by(id=course_id).first()
+    # Check if logged in user is the creator of course
+    if course.user_id != login_session['user_id']:
+        flash('You are not the author of this course!')
+        return redirect('/login')
+    if request.method == 'GET':
+        # Get all programs
+        programs = session.query(Programs).all()
+        return render_template('edit_course.html',programs=programs, course=course)
+    else:
+        # Modify the changed values
+        if request.form['title']:
+            course.title = request.form['title']
+        if request.form['description']:
+            course.description = request.form['description']
+        if request.form['program_id']:
+            course.program_id = request.form['program_id']
+        session.add(course)
+        session.commit()
+        #Session.remove()
+        return redirect(url_for('display_course_information', program_id=course.program_id,course_title=course.title))
+
+
+# Delete a course created by the current user
+@app.route('/catalog/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
+@app.route('/programs/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
+def delete_course(program_id,course_id):
+    return 'not yet'
 
 
 @app.route('/login')
@@ -135,20 +175,22 @@ def logout():
     return redirect(url_for('display_root'))
 
 # Helper functions in our gconnect function
+
+
 def create_user(login_session):
     session = Session()
     new_user = Users(
-         name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+        name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
     session.add(new_user)
     session.commit()
-    user = session.query(Users).filter_by(email=login_session['email']).one()
+    user = session.query(Users).filter_by(email=login_session['email']).first()
     Session.remove()
     return user.id
 
 
-def get_user_info(user_id):
+def get_user(user_id):
     session = Session()
-    user = session.query(Users).filter_by(id=user_id).one()
+    user = session.query(Users).filter_by(id=user_id).first()
     Session.remove()
     return user
 
@@ -156,12 +198,13 @@ def get_user_info(user_id):
 def get_user_id(email):
     session = Session()
     try:
-        user = session.query(Users).filter_by(email=email).one()
+        user = session.query(Users).filter_by(email=email).first()
         Session.remove()
         return user.id
     except:
         Session.remove()
         return None
+
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -192,9 +235,10 @@ def gconnect():
     # Check that the access token is valid
     access_token = credentials.access_token
     # Google API server can verify if our access_token is valid
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %
+           access_token)
     h = httplib2.Http()
-    # Create json GET request containing the url 
+    # Create json GET request containing the url
     result = json.loads(h.request(url, 'GET')[1])
 
     # If there was an error in the access token info, abort
@@ -217,7 +261,7 @@ def gconnect():
         print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
-    
+
     # Lastly I will check and see if a user is already logged into the system
     # This will return a 200 successful authentication without resetting all of the login session variables again
 
@@ -268,7 +312,7 @@ def gdisconnect():
 
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
-    result = h.request(url, 'POST')[0]
+    result = h.request(url, 'GET')[0]
 
     if result['status'] != '200':
         # If the given token was invalid

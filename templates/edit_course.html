@@ -21,9 +21,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
         <div class="container">
             <a class="navbar-brand" href="{{url_for('display_root')}}">
-                    <h2>
-                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="">
-                Udacity catalog</h2>
+                <h2>
+                    <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="">
+                    Udacity catalog</h2>
             </a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
@@ -51,35 +51,42 @@
     </nav>
     <div class="row" style="margin-left: 15px">
         <div class="col-md-8">
-            <h3 class="header__title" > Create a new course </h3>
-            
-            <form action="{{url_for('create_new_course')}}" method="post" class="form__label" >
+            <h3> Edit {{course.title}} course </h3>
+
+            <form action="{{url_for('edit_course', program_id= course.program_id, course_id=course.id)}}" method="post">
                 <fieldset>
-                    <label  for="title"> <h4>Course title</h4> </label>
-                    
-                    <input class="form-control" id="title" type="text" name="title" style="margin-bottom: 2%">
-            
-            
-                    <label for="description" > <h4>Description</h4> </label>
-                    <textarea name="description" id="description"  rows="5" class="form-control" style="margin-bottom: 2%" aria-valuemax="512"></textarea>
-            
-                    <label for="program_id" ><h4>Program</h4> </label>
-                    <select class="form-control" name="program_id" style="margin-bottom: 2%; width: 30%" >
+                    <label for="title">
+                        <h4>Course title</h4>
+                    </label>
+
+                    <input class="form-control" id="title" type="text" name="title" style="margin-bottom: 2%"
+                        placeholder="{{course.title}}">
+
+
+                    <label for="description">
+                        <h4>Description</h4>
+                    </label>
+                    <textarea name="description" id="description" rows="5" class="form-control"
+                        style="margin-bottom: 2%" aria-valuemax="255" placeholder="{{course.description}}">
+                </textarea>
+
+                    <label for="program_id">
+                        <h4>Program</h4>
+                    </label>
+                    <select class="form-control" id="program_id" name="program_id" style="margin-bottom: 2%; width: 30%">
                         {% for program in programs %}
-                            <option value="{{program.id}}">{{program.title}}</option>
+                        <option {% if program.id==course.program_id %} selected="selected"{% endif %} value="{{program.id}}">{{program.title}}</option>
                         {% endfor %}
                     </select>
                 </fieldset>
                 <input type="submit" value="submit" class="btn btn-primary">
                 {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                             <p class="alert alert-danger" role="alert">{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for message in messages %}
+                <p class="alert alert-danger" role="alert">{{ message }}</p>
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
             </form>
         </div>
     </div>
-</body>
-</html>
