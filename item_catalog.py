@@ -4,7 +4,7 @@ import random
 import httplib2
 import requests
 from flask import session as login_session
-from flask import Flask, render_template, redirect, url_for, request, json, make_response, flash
+from flask import Flask, render_template, redirect, url_for, request, json, jsonify, make_response, flash
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -29,6 +29,38 @@ Session = scoped_session(session_factory)
 # The client_id of our google API credentials
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
+
+# JSON API to show Catalog information (all programs)
+@app.route('/catalog/JSON')
+@app.route('/programs/JSON')
+def jsonify_all_programs():
+    session = Session()
+    programs = session.query(Programs).all()
+    Session.remove()
+    return jsonify(
+                   programs=[program.serialize for program in programs])
+
+
+# JSON API to show program courses
+@app.route('/catalog/<int:program_id>/JSON')
+@app.route('/programs/<int:program_id>/JSON')
+@app.route('/catalog/<int:program_id>/courses/JSON')
+@app.route('/programs/<int:program_id>/courses/JSON')
+def showCategoryJSON(program_id):
+    session = Session()
+    courses = session.query(Courses).filter_by(program_id=program_id).all()
+    Session.remove()
+    return jsonify(courses=[course.serialize for course in courses])
+
+
+# JSON API to show  a specific course information
+@app.route('/catalog/<int:program_id>/courses/<int:course_id>/JSON')
+@app.route('/programs/<int:program_id>/courses/<int:course_id>/JSON')
+def showBookJSON(program_id, course_id):
+    session = Session()
+    course = session.query(Courses).filter_by(id=course_id).first()
+    Session.remove()
+    return jsonify(course=[course.serialize])
 
 # Display the root page, we display all disponible porgrams
 @app.route('/')

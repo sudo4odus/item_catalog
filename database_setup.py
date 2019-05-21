@@ -35,7 +35,7 @@ class Programs(Base):
         # Return object data in serializeable format
         return {
             'id': self.id,
-            'title': self.name,
+            'title': self.title,
         }
 
 
