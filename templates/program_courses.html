@@ -22,7 +22,7 @@
         <div class="container">
             <a class="navbar-brand" href="{{url_for('display_root')}}">
                     <h2>
-                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="Udacity logo" >
+                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="">
                 Udacity catalog</h2>
             </a>
             <div class="collapse navbar-collapse">
@@ -62,7 +62,6 @@
                                 <li> {{program.title}}</li>
                                 <br>
                             </a>
-
                             {% endfor %}
                         </ul>
                     </h4>
@@ -70,20 +69,20 @@
                 <div class="col-md-8">
                     <div class="container">
                         <br>
-                        <h3 class="header3_title"> Latest courses</h3> <br>
+                        <h3 class="header3_title"> {{programe_title}} ({{count}} courses)</h3> <br>
                         <h5>
                             <ul>
                                 {% for course in courses %}
                                 <a href="{{url_for('display_course_information', program_id = course.id, course_title= course.title)}}">
                                     <li>
                                         {{course.title}}
-                                        <span class="header__title">({{course.programs.title}})</span>
                                         </li><br>
                                     </li>
                                 </a>
                                 {% endfor %}
                             </ul>
                         </h5>
+                        
                     </div>
                 </div>
             </div>

@@ -49,47 +49,30 @@
             </div>
         </div>
     </nav>
+
+    
     <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <br>
-                    <h3 class="header3_title"> Programs</h3><br>
-                    <h4>
-                        <ul>
-                            {% for program in programs %}
-                            <a href="{{url_for('display_program_courses', program_title = program.title)}}">
-                                <li> {{program.title}}</li>
-                                <br>
-                            </a>
-
-                            {% endfor %}
-                        </ul>
-                    </h4>
-                </div>
-                <div class="col-md-8">
-                    <div class="container">
-                        <br>
-                        <h3 class="header3_title"> Latest courses</h3> <br>
-                        <h5>
-                            <ul>
-                                {% for course in courses %}
-                                <a href="{{url_for('display_course_information', program_id = course.id, course_title= course.title)}}">
-                                    <li>
-                                        {{course.title}}
-                                        <span class="header__title">({{course.programs.title}})</span>
-                                        </li><br>
-                                    </li>
-                                </a>
-                                {% endfor %}
-                            </ul>
-                        </h5>
-                    </div>
-                </div>
-            </div>
+            <div class="container">
+    <div class="row">
+		<div col-md-4>
+            <br>
+            <h2 >
+            <p style="text-align: center">
+            
+				{{title}}
+            
+        </p>
+    </h2>
+            <br>
         </div>
-    </div>
-   
+    
+			<div class="container">
+                <p style="text-align: center">{{description}}</p>
+				
+			</div>
+			
+            </div>
+            </div>
+            </div>
 </body>
-
 </html>
