@@ -49,50 +49,37 @@
             </div>
         </div>
     </nav>
-    <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
+    <div class="row" style="margin-left: 15px">
+        <div class="col-md-8">
+            <h3 class="header__title" > Create a new course </h3>
+            
+            <form action="{{url_for('create_new_course')}}" method="post" class="form__label" >
+                <fieldset>
+                    <label  for="title"> <h4>Course title</h4> </label>
                     
-                    <h3 style="margin-top: 20px"> Programs</h3><br>
-                    <h4>
-                        <ul>
-                            {% for program in programs %}
-                            <a href="{{url_for('display_program_courses', program_title = program.title)}}">
-                                <li> {{program.title}}</li>
-                                <br>
-                            </a>
-                            {% endfor %}
-                        </ul>
-                    </h4>
-                </div>
-                <div class="col-md-8">
-                    <div class="container">
-                        <div style="margin-top: 30px">
-                        <h3 style="display: inline;"> {{programe_title}} ({{count}} courses)</h3> 
-                        {% if 'username' in session %}
-                        <a href="{{url_for('create_new_course')}}" class="btn btn-success" style="margin-left: 30%">Create a new course</a>
-                            {% endif %}
-                    </div>
-                        <h5>
-                            <ul>
-                                {% for course in courses %}
-                                <a href="{{url_for('display_course_information', program_id = course.id, course_title= course.title)}}">
-                                    <li>
-                                        {{course.title}}
-                                        </li><br>
-                                    </li>
-                                </a>
-                                {% endfor %}
-                            </ul>
-                        </h5>
-                        
-                    </div>
-                </div>
-            </div>
+                    <input class="form-control" id="title" type="text" name="title" style="margin-bottom: 2%">
+            
+            
+                    <label for="description" > <h4>Description</h4> </label>
+                    <textarea name="description" id="description"  rows="5" class="form-control" style="margin-bottom: 2%"></textarea>
+            
+                    <label for="program_id" ><h4>Program</h4> </label>
+                    <select class="form-control" name="program_id" style="margin-bottom: 2%; width: 30%" >
+                        {% for program in programs %}
+                            <option value="{{program.id}}">{{program.title}}</option>
+                        {% endfor %}
+                    </select>
+                </fieldset>
+                <input type="submit" value="submit" class="btn btn-primary">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                             <p class="alert alert-danger" role="alert">{{ message }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </form>
         </div>
     </div>
-   
 </body>
-
 </html>

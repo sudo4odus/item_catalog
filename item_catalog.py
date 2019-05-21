@@ -4,7 +4,7 @@ import random
 import httplib2
 import requests
 from flask import session as login_session
-from flask import Flask, render_template, redirect, url_for, request, json, make_response
+from flask import Flask, render_template, redirect, url_for, request, json, make_response, flash
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -65,13 +65,49 @@ def display_program_courses(program_title):
 @app.route('/catalog/<int:program_id>/<string:course_title>')
 @app.route('/programs/<int:program_id>/<string:course_title>')
 def display_course_information(program_id, course_title):
-    print('\nhere main')
     session = Session()
     # Select the designed course
     course = session.query(Courses).filter_by(title=course_title).first()
     # Close the connection
     Session.remove()
     return render_template('course.html', title=course.title, description=course.description)
+
+# Create a new course after login
+@app.route('/catalog/new_course', methods=['GET', 'POST'])
+@app.route('/programs/new_course', methods=['GET', 'POST'])
+def create_new_course():
+    session = Session()
+    # Check if the user is logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
+    if request.method == 'GET':
+        # Get all programs
+        programs = session.query(Programs).all()
+
+        return render_template('create_new_course.html', programs=programs)
+    else:
+        # Check if the form was correctly filled in
+        if not request.form['title']:
+            flash('Enter the course title please!')
+            return redirect(url_for('create_new_course'))
+
+        if not request.form['program_id']:
+            flash('Select the program of the course please!')
+            return redirect(url_for('create_new_course'))
+
+        # Add Book
+        new_course = Courses(
+                       title=request.form['title'],
+                       description=request.form['description'],
+                       program_id=request.form['program_id'],
+                       user_id=login_session['user_id'])
+        session.add(new_course)
+        session.commit()
+        # Display the program courses of the new course
+        program = session.query(Programs).filter_by(id=request.form['program_id']).first()
+        Session.remove()
+        return redirect(url_for('display_program_courses', program_title=program.title))
 
 
 @app.route('/login')
