@@ -1,63 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "common.html" %}
 
-<head>
-    <title>Udacity courses catalog</title>
+{% block content %}
+<div class="row h-100 justify-content-center align-items-center ta mt30">
+    <div class="col-md-8">
+        <h3 id="header3_delete"> Delete a course</h3>
+        <form action="{{url_for('delete_course', program_id= course.program_id, course_id=course.id)}}" method="post">
+            <h4 class="alert-danger">Are you sure you want to delete <small>{{course.title}}</small> ?</h4>
+            <input class="btn btn-danger" type="submit" value="Delete">
+            <a href="{{url_for('display_course_information', program_id = course.program_id ,course_title = course.title )}}"
+                class="btn btn-secondary mt50">Cancel</a>
 
-    <meta name="author" content="Sid Ali Mahmoudi">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description"
-        content="Udacity courses catalog, Udacity programs, Udacity courses, nano degrees, free courses">
-
-
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
-        <div class="container">
-            <a class="navbar-brand" href="{{url_for('display_root')}}">
-                <h2>
-                    <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="">
-                    Udacity catalog</h2>
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                <a class="navbar-brand" href="https://www.udacity.com/courses/all">
-                    <h2>Full Catalog online</h2>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                {%if 'username' not in session %}
-                <a href="{{url_for('login')}}" class="btn btn-success">
-                    Login
-                </a>
-                {% else %}
-                <a href="{{url_for('logout')}}" class="btn btn-danger">
-                    Logout
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-    <div class="row h-100 justify-content-center align-items-center" style="text-align: center; margin-top: 50px">
-		<div class="col-md-8">
-			<h3 style="margin-bottom: 4%; width: 30%"> Delete a course</h3>
-			<form action="{{url_for('delete_course', program_id= course.program_id, course_id=course.id)}}" method="post">
-				<h4 class="alert-danger" style="margin-bottom: 5%; max-width: 100%; width: auto !important; display: table-row; ">Are you sure you want to delete <small>{{course.title}}</small> ?</h4>
-                <input class="btn btn-danger" type="submit" value="Delete" style="margin-right: 50px; margin-top: 50px;" >
-                <a href="{{url_for('display_course_information', program_id = course.program_id ,course_title = course.title )}}" class="btn btn-secondary"
-                style="margin-top: 50px">Cancel</a>
-				
-			</form>
-		</div>
-	</div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -2,118 +2,114 @@
 <html lang="en">
 
 <head>
-    <title>Udacity courses catalog</title>
+  <title>Udacity courses catalog</title>
+  <meta name="author" content="Sid Ali Mahmoudi">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description"
+    content="Udacity courses catalog, Udacity programs, Udacity courses, nano degrees, free courses">
 
-    <meta name="author" content="Sid Ali Mahmoudi">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description"
-        content="Udacity courses catalog, Udacity programs, Udacity courses, nano degrees, free courses">
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- https://developers.google.com/identity/sign-in/web/server-side-flow -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id"
+    content="472134244872-s7qlhiv3l8c1ph0hesndjb758ued55kt.apps.googleusercontent.com">
 
-
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- https://developers.google.com/identity/sign-in/web/server-side-flow -->
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="google-signin-client_id" content="472134244872-s7qlhiv3l8c1ph0hesndjb758ued55kt.apps.googleusercontent.com"> 
-  
   <!-- https://gist.github.com/shyamgupta/d8ba035403e8165510585b805cf64ee6 -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
   <script>
     function start() {
-      gapi.load('auth2', function() {
+      gapi.load('auth2', function () {
         auth2 = gapi.auth2.init({
           client_id: '472134244872-s7qlhiv3l8c1ph0hesndjb758ued55kt.apps.googleusercontent.com'
         });
       });
     }
   </script>
-    <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
-        <div class="container">
-            <a class="navbar-brand" href="{{url_for('display_root')}}">
-                    <h2>
-                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="Udacity logo" >
-                Udacity catalog</h2>
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+    <div class="container">
+      <a class="navbar-brand" href="{{url_for('display_root')}}">
+        <h2>
+          <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="Udacity logo">
+          Udacity catalog</h2>
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
 
-                </ul>
-                <a class="navbar-brand" href="https://www.udacity.com/courses/all">
-                    <h2>Full Catalog online</h2>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
+        </ul>
+        <a class="navbar-brand" href="https://www.udacity.com/courses/all">
+          <h2>Full Catalog online</h2>
+        </a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
 
-                </ul>
-                {%if 'username' not in session %}
-                <a href="{{url_for('login')}}" class="btn btn-success">
-                    Login
-                </a>
-                {% else %}
-                <a href="{{url_for('logout')}}" class="btn btn-danger">
-                    Logout
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-
-    <!-- GOOGLE PLUS SIGN IN BUTTON -->
-    <div id="signinButton" class="g-signin2" data-onsuccess="onSignIn">
-        <span class="g-signin"
-        data-scope="openid email" 
-        data-clientid="472134244872-s7qlhiv3l8c1ph0hesndjb758ued55kt.apps.googleusercontent.com"
-        data-redirecturi="postmessage"
-        data-accesstype="offline"
-        data-cookiepolicy="single_host_origin"
-        data-callback="signInCallback"
-        data-approvalprompt="force">
-      </span>
+        </ul>
+        {%if 'username' not in session %}
+        <a href="{{url_for('login')}}" class="btn btn-success">
+          Login
+        </a>
+        {% else %}
+        <a href="{{url_for('logout')}}" class="btn btn-danger">
+          Logout
+        </a>
+        {% endif %}
+      </div>
     </div>
-    <div id="result"></div>
+  </nav>
 
-    <script>
-        $('#signinButton').click(function() {
-          function signInCallback(authResult){
-            if (authResult['code']){
-              $('#signinButton').attr('style', 'display: none');
-              $.ajax({
-                type: 'POST',
-                url: '/gconnect?state={{STATE}}',
-                headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-                },
-                contentType: 'application/octet-stream; charset=utf-8',
-                success:function(result){
-                  $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
-                       setTimeout(function() {
-                        window.location.href = "/catalog";
-                       }, 20);
-                },
-                processData:false,
-                data:authResult['code']
-              });
-            } else{
-              // handle error
-              if (authResult['error']) {
-              console.log('There was an error: ' + authResult['error']);
-              }else{
-              $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-              }
-            }
+  <!-- GOOGLE PLUS SIGN IN BUTTON -->
+  <div id="signinButton" class="g-signin2" data-onsuccess="onSignIn">
+    <span class="g-signin" data-scope="openid email"
+      data-clientid="472134244872-s7qlhiv3l8c1ph0hesndjb758ued55kt.apps.googleusercontent.com"
+      data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin"
+      data-callback="signInCallback" data-approvalprompt="force">
+    </span>
+  </div>
+  <div id="result"></div>
+
+  <script>
+    $('#signinButton').click(function () {
+      function signInCallback(authResult) {
+        if (authResult['code']) {
+          $('#signinButton').attr('style', 'display: none');
+          $.ajax({
+            type: 'POST',
+            url: '/gconnect?state={{STATE}}',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            contentType: 'application/octet-stream; charset=utf-8',
+            success: function (result) {
+              $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+              setTimeout(function () {
+                window.location.href = "/catalog";
+              }, 20);
+            },
+            processData: false,
+            data: authResult['code']
+          });
+        } else {
+          // handle error
+          if (authResult['error']) {
+            console.log('There was an error: ' + authResult['error']);
+          } else {
+            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
           }
-          auth2.grantOfflineAccess().then(signInCallback);
-        });
-      </script>
+        }
+      }
+      auth2.grantOfflineAccess().then(signInCallback);
+    });
+  </script>
 
 </body>
+
 </html>

@@ -1,0 +1,44 @@
+.di{
+    display: inline;
+}
+h4 .alert-danger{
+    margin-bottom: 5%; 
+    max-width: 100%; 
+    width: auto !important; 
+    display: table-row;
+}
+#header3_delete{
+    margin-bottom: 4%; 
+    width: 30%
+}
+
+input .btn .btn-danger{
+    margin-right: 50px; 
+    margin-top: 50px;
+}
+.mb2{
+    margin-bottom: 2%;
+}
+
+.ml30{
+    margin-left: 30%;
+}
+
+.mr50{
+    margin-right: 50px;
+}
+
+.mt30{
+    margin-top: 30px;
+}
+
+.mt50{
+    margin-top: 50px;
+}
+
+.ta{
+    text-align: center;
+}
+.w30{
+    width: 30%;
+}

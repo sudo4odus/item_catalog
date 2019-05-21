@@ -38,7 +38,7 @@ def jsonify_all_programs():
     programs = session.query(Programs).all()
     Session.remove()
     return jsonify(
-                   programs=[program.serialize for program in programs])
+        programs=[program.serialize for program in programs])
 
 
 # JSON API to show program courses
@@ -46,7 +46,7 @@ def jsonify_all_programs():
 @app.route('/programs/<int:program_id>/JSON')
 @app.route('/catalog/<int:program_id>/courses/JSON')
 @app.route('/programs/<int:program_id>/courses/JSON')
-def showCategoryJSON(program_id):
+def jsonify_program(program_id):
     session = Session()
     courses = session.query(Courses).filter_by(program_id=program_id).all()
     Session.remove()
@@ -56,7 +56,7 @@ def showCategoryJSON(program_id):
 # JSON API to show  a specific course information
 @app.route('/catalog/<int:program_id>/courses/<int:course_id>/JSON')
 @app.route('/programs/<int:program_id>/courses/<int:course_id>/JSON')
-def showBookJSON(program_id, course_id):
+def jsonify_course(program_id, course_id):
     session = Session()
     course = session.query(Courses).filter_by(id=course_id).first()
     Session.remove()
@@ -146,7 +146,7 @@ def create_new_course():
 # Edit a course created by the current user
 @app.route('/catalog/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
 @app.route('/programs/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
-def edit_course(program_id,course_id):
+def edit_course(program_id, course_id):
     session = Session()
     # Check if the user is logged in
     if 'username' not in login_session:
@@ -160,7 +160,7 @@ def edit_course(program_id,course_id):
     if request.method == 'GET':
         # Get all programs
         programs = session.query(Programs).all()
-        return render_template('edit_course.html',programs=programs, course=course)
+        return render_template('edit_course.html', programs=programs, course=course)
     else:
         # Modify the changed values
         if request.form['title']:
@@ -171,14 +171,14 @@ def edit_course(program_id,course_id):
             course.program_id = request.form['program_id']
         session.add(course)
         session.commit()
-        #Session.remove()
-        return redirect(url_for('display_course_information', program_id=course.program_id,course_title=course.title))
+        # Session.remove()
+        return redirect(url_for('display_course_information', program_id=course.program_id, course_title=course.title))
 
 
 # Delete a course created by the current user
 @app.route('/catalog/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
 @app.route('/programs/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
-def delete_course(program_id,course_id):
+def delete_course(program_id, course_id):
     session = Session()
     # Check if the user is logged in
     if 'username' not in login_session:
@@ -192,10 +192,11 @@ def delete_course(program_id,course_id):
     if request.method == 'GET':
         return render_template('delete_course.html', course=course)
     else:
-        program = session.query(Programs).filter_by(id=course.program_id).first()
+        program = session.query(Programs).filter_by(
+            id=course.program_id).first()
         session.delete(course)
         session.commit()
-        #Session.remove()
+        # Session.remove()
         return redirect(url_for('display_program_courses', program_title=program.title))
 
 

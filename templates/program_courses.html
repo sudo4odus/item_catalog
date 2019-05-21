@@ -1,60 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "common.html" %}
 
-<head>
-    <title>Udacity courses catalog</title>
-
-    <meta name="author" content="Sid Ali Mahmoudi">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description"
-        content="Udacity courses catalog, Udacity programs, Udacity courses, nano degrees, free courses">
+{% block content %}
 
 
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
-        <div class="container">
-            <a class="navbar-brand" href="{{url_for('display_root')}}">
-                    <h2>
-                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="">
-                Udacity catalog</h2>
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                <a class="navbar-brand" href="https://www.udacity.com/courses/all">
-                    <h2>Full Catalog online</h2>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                {%if 'username' not in session %}
-                <a href="{{url_for('login')}}" class="btn btn-success">
-                    Login
-                </a>
-                {% else %}
-                <a href="{{url_for('logout')}}" class="btn btn-danger">
-                    Logout
-                </a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-    <div class="content">
+<div class="content">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    
-                    <h3 style="margin-top: 20px"> Programs</h3><br>
+                    <h3 class="mt30"> Programs</h3><br>
                     <h4>
                         <ul>
                             {% for program in programs %}
@@ -68,10 +21,10 @@
                 </div>
                 <div class="col-md-8">
                     <div class="container">
-                        <div style="margin-top: 30px">
-                        <h3 style="display: inline;"> {{programe_title}} ({{count}} courses)</h3> 
+                        <div class="mt30">
+                        <h3 class="di"></h3> {{programe_title}} ({{count}} courses)</h3> 
                         {% if 'username' in session %}
-                        <a href="{{url_for('create_new_course')}}" class="btn btn-success" style="margin-left: 30%">Create a new course</a>
+                        <a href="{{url_for('create_new_course')}}" class="btn btn-success ml30" >Create a new course</a>
                             {% endif %}
                     </div>
                         <h5>
@@ -85,14 +38,11 @@
                                 </a>
                                 {% endfor %}
                             </ul>
-                        </h5>
-                        
+                        </h5>  
                     </div>
                 </div>
             </div>
         </div>
     </div>
    
-</body>
-
-</html>
+    {% endblock %}

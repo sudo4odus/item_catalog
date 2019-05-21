@@ -1,100 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "common.html" %}
 
-<head>
-    <title>Udacity courses catalog</title>
+{% block content %}
 
-    <meta name="author" content="Sid Ali Mahmoudi">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description"
-        content="Udacity courses catalog, Udacity programs, Udacity courses, nano degrees, free courses">
-
-
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+<div class="row">
+    <div class="col-md-4">
+        <h3 class="mt30"> Programs</h3><br>
+        <h4>
+            <ul>{% for program in programs %}
+                <a href="{{url_for('display_program_courses', program_title = program.title)}}">
+                    <li> {{program.title}}</li>
+                    <br>
+                </a>
+                {% endfor %}
+            </ul>
+        </h4>
+    </div>
+    <div class="col-md-8">
         <div class="container">
-            <a class="navbar-brand" href="{{url_for('display_root')}}">
-                    <h2>
-                <img src="/static/udacity.jpg" width="80" height="95" class="d-inline-block align-middle" alt="Udacity logo" >
-                Udacity catalog</h2>
-            </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                <a class="navbar-brand" href="https://www.udacity.com/courses/all">
-                    <h2>Full Catalog online</h2>
-                </a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ml-auto">
-
-                </ul>
-                {%if 'username' not in session %}
-                <a href="{{url_for('login')}}" class="btn btn-success">
-                    Login
-                </a>
-                {% else %}
-                <a href="{{url_for('logout')}}" class="btn btn-danger">
-                    Logout
-                </a>
+            <div class="mt30">
+                <h3 class="di"> Latest courses</h3>
+                {% if 'username' in session %}
+                <a href="{{url_for('create_new_course')}}" class="btn btn-success" style="margin-left: 30%">Create a new
+                    course</a>
                 {% endif %}
             </div>
-        </div>
-    </nav>
-    <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    
-                    <h3 style="margin-top: 20px"> Programs</h3><br>
-                    <h4>
-                        <ul>
-                            {% for program in programs %}
-                            <a href="{{url_for('display_program_courses', program_title = program.title)}}">
-                                <li> {{program.title}}</li>
-                                <br>
-                            </a>
-
-                            {% endfor %}
-                        </ul>
-                    </h4>
-                </div>
-                <div class="col-md-8">
-                    <div class="container">
-                        <div style="margin-top: 30px">
-                        <h3  style="display: inline;"> Latest courses</h3> 
-                        {% if 'username' in session %}
-					<a href="{{url_for('create_new_course')}}" class="btn btn-success" style="margin-left: 30%">Create a new course</a>
-				        {% endif %}
-                        </div>
-                        <h5>
-                            <ul>
-                                {% for course in courses %}
-                                <a href="{{url_for('display_course_information', program_id = course.id, course_title= course.title)}}">
-                                    <li>
-                                        {{course.title}}
-                                        <span class="header__title">({{course.programs.title}})</span>
-                                        </li><br>
-                                    </li>
-                                </a>
-                                {% endfor %}
-                            </ul>
-                        </h5>
-                        
-                    </div>
-                </div>
-            </div>
+            <h5>
+                <ul>{% for course in courses %}
+                    <a
+                        href="{{url_for('display_course_information', program_id = course.id, course_title= course.title)}}">
+                        <li>{{course.title}}
+                            <span>({{course.programs.title}})</span>
+                        </li><br>
+                    </a>
+                    {% endfor %}
+                </ul>
+            </h5>
         </div>
     </div>
-   
-</body>
+</div>
 
-</html>
+
+{% endblock %}
