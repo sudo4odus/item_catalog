@@ -4,7 +4,8 @@ import random
 import httplib2
 import requests
 from flask import session as login_session
-from flask import Flask, render_template, redirect, url_for, request, json, jsonify, make_response, flash
+from flask import Flask, render_template, redirect,\
+                  url_for, request, json, jsonify, make_response, flash
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -31,6 +32,8 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())[
     'web']['client_id']
 
 # JSON API to show Catalog information (all programs)
+
+
 @app.route('/catalog/JSON')
 @app.route('/programs/JSON')
 def jsonify_all_programs():
@@ -63,6 +66,8 @@ def jsonify_course(program_id, course_id):
     return jsonify(course=[course.serialize])
 
 # Display the root page, we display all disponible porgrams
+
+
 @app.route('/')
 @app.route('/catalog')
 @app.route('/programs')
@@ -74,9 +79,12 @@ def display_root():
     courses = session.query(Courses).order_by(Courses.id.desc())
     # Close the connection
     Session.remove()
-    return render_template('all_programs.html', programs=programs, courses=courses)
+    return render_template('all_programs.html',
+                           programs=programs, courses=courses)
 
 # Display courses of a specific program
+
+
 @app.route('/catalog/<string:program_title>')
 @app.route('/catalog/<string:program_title>/courses')
 @app.route('/programs/<string:program_title>/courses')
@@ -92,9 +100,13 @@ def display_program_courses(program_title):
     courses = session.query(Courses).filter_by(program_id=program.id).all()
     # Close the connection
     Session.remove()
-    return render_template('program_courses.html', programs=programs, courses=courses, programe_title=program.title, count=count)
+    return render_template('program_courses.html',
+                           programs=programs, courses=courses,
+                           programe_title=program.title, count=count)
 
 # Display information of a selected course
+
+
 @app.route('/catalog/<int:program_id>/<string:course_title>')
 @app.route('/programs/<int:program_id>/<string:course_title>')
 def display_course_information(program_id, course_title):
@@ -106,6 +118,8 @@ def display_course_information(program_id, course_title):
     return render_template('course.html', course=course)
 
 # Create a new course after login
+
+
 @app.route('/catalog/new_course', methods=['GET', 'POST'])
 @app.route('/programs/new_course', methods=['GET', 'POST'])
 def create_new_course():
@@ -141,11 +155,16 @@ def create_new_course():
         program = session.query(Programs).filter_by(
             id=request.form['program_id']).first()
         Session.remove()
-        return redirect(url_for('display_program_courses', program_title=program.title))
+        return redirect(url_for('display_program_courses',
+                                program_title=program.title))
 
 # Edit a course created by the current user
-@app.route('/catalog/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
-@app.route('/programs/<int:program_id>/<int:course_id>/edit', methods=['GET', 'POST'])
+
+
+@app.route('/catalog/<int:program_id>/<int:course_id>/edit',
+           methods=['GET', 'POST'])
+@app.route('/programs/<int:program_id>/<int:course_id>/edit',
+           methods=['GET', 'POST'])
 def edit_course(program_id, course_id):
     session = Session()
     # Check if the user is logged in
@@ -160,7 +179,8 @@ def edit_course(program_id, course_id):
     if request.method == 'GET':
         # Get all programs
         programs = session.query(Programs).all()
-        return render_template('edit_course.html', programs=programs, course=course)
+        return render_template('edit_course.html',
+                               programs=programs, course=course)
     else:
         # Modify the changed values
         if request.form['title']:
@@ -172,12 +192,18 @@ def edit_course(program_id, course_id):
         session.add(course)
         session.commit()
         # Session.remove()
-        return redirect(url_for('display_course_information', program_id=course.program_id, course_title=course.title))
+        return redirect(url_for('display_course_information',
+                                program_id=course.program_id,
+                                course_title=course.title))
 
 
 # Delete a course created by the current user
-@app.route('/catalog/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
-@app.route('/programs/<int:program_id>/<int:course_id>/delete', methods=['GET', 'POST'])
+
+
+@app.route('/catalog/<int:program_id>/<int:course_id>/delete',
+           methods=['GET', 'POST'])
+@app.route('/programs/<int:program_id>/<int:course_id>/delete',
+           methods=['GET', 'POST'])
 def delete_course(program_id, course_id):
     session = Session()
     # Check if the user is logged in
@@ -197,7 +223,8 @@ def delete_course(program_id, course_id):
         session.delete(course)
         session.commit()
         # Session.remove()
-        return redirect(url_for('display_program_courses', program_title=program.title))
+        return redirect(url_for('display_program_courses',
+                                program_title=program.title))
 
 
 @app.route('/login')
@@ -230,7 +257,9 @@ def logout():
 def create_user(login_session):
     session = Session()
     new_user = Users(
-        name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+        name=login_session['username'],
+        email=login_session['email'],
+        picture=login_session['picture'])
     session.add(new_user)
     session.commit()
     user = session.query(Users).filter_by(email=login_session['email']).first()
@@ -251,7 +280,8 @@ def get_user_id(email):
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    # Validate state token to ensure that the user is making the request and not a malicious code
+    # Validate state token to ensure that the user
+    # is making the request and not a malicious code
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -261,14 +291,19 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        # This line creates an oauth flow object and adds my client's secret key information to it.
+        # This line creates an oauth flow object and adds my
+        # client's secret key information to it.
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
-        # Here I specify with post message that this is the one time code flow my server will be sending off.
+        # Here I specify with post message that this is the
+        # one time code flow my server will be sending off.
         oauth_flow.redirect_uri = 'postmessage'
-        # I initiate the exchange with the step two exchange function, passing in my one-time code as input.
+        # I initiate the exchange with the step two exchange
+        # function, passing in my one-time code as input.
         credentials = oauth_flow.step2_exchange(code)
-    # This step to exchange function of the flow class exchanges an authorization code for a credentials object.
-    # If all goes well, then the response from Google will be an object stored in my credentials variable
+    # This step to exchange function of the flow class
+    # exchanges an authorization code for a credentials object.
+    # If all goes well, then the response from Google will
+    # be an object stored in my credentials variable
     except FlowExchangeError:
         response = make_response(json.dumps(
             'Failed to upgrade the authorization code.'), 401)
@@ -306,7 +341,8 @@ def gconnect():
         return response
 
     # Lastly I will check and see if a user is already logged into the system
-    # This will return a 200 successful authentication without resetting all of the login session variables again
+    # This will return a 200 successful authentication without resetting
+    # all of the login session variables again
 
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
