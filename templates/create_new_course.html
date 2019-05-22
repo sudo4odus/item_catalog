@@ -27,7 +27,9 @@
                     {% endfor %}
                 </select>
             </fieldset>
-            <input type="submit" value="submit" class="btn btn-primary">
+            <input type="submit" value="submit" class="btn btn-primary mr50 mt50">
+            <a href="{{url_for('display_root')}}"
+                class="btn btn-secondary mt50">Cancel</a>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
             {% for message in messages %}
