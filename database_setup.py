@@ -10,6 +10,7 @@ Base = declarative_base()
 
 """Users class <==> users table"""
 
+
 class Users(Base):
     __tablename__ = 'users'
 
@@ -17,17 +18,17 @@ class Users(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False)
     picture = Column(String(256))
-    
-    
 
 """Programs class <==> programs table"""
+
 
 class Programs(Base):
     __tablename__ = 'programs'
 
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String(256), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, default=1)
+    user_id = Column(Integer,
+                     ForeignKey('users.id'), nullable=False, default=1)
     users = relationship(Users)
 
     @property
@@ -41,6 +42,7 @@ class Programs(Base):
 
 """Courses class <==> courses table"""
 
+
 class Courses(Base):
     __tablename__ = 'courses'
 
@@ -49,7 +51,8 @@ class Courses(Base):
     description = Column(String(512))
     program_id = Column(Integer, ForeignKey('programs.id'), nullable=False)
     programs = relationship(Programs)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False, default=1)
+    user_id = Column(Integer,
+                     ForeignKey('users.id'), nullable=False, default=1)
     users = relationship(Users)
 
     @property
