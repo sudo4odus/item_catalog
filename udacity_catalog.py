@@ -3,9 +3,16 @@ import string
 import random
 import httplib2
 import requests
-from flask import session as login_session
-from flask import Flask, render_template, redirect,\
-                  url_for, request, json, jsonify, make_response, flash
+from flask import (
+   session as login_session,
+   Flask,
+   render_template,
+   request,
+   json,
+   jsonify,
+   make_response,
+   flash
+)
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -169,7 +176,7 @@ def edit_course(program_id, course_id):
     session = Session()
     # Check if the user is logged in
     if 'username' not in login_session:
-        return redirect('/login')
+        return redirect('/')
     # Select the targeted course
     course = session.query(Courses).filter_by(id=course_id).first()
     # Check if logged in user is the creator of course
