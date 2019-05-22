@@ -30,6 +30,7 @@ class Programs(Base):
     user_id = Column(Integer,
                      ForeignKey('users.id'), nullable=False, default=1)
     users = relationship(Users)
+    users = relationship("Users", cascade="save-update, delete-orphan")
 
     @property
     def serialize(self):
@@ -51,9 +52,11 @@ class Courses(Base):
     description = Column(String(512))
     program_id = Column(Integer, ForeignKey('programs.id'), nullable=False)
     programs = relationship(Programs)
+    programs = relationship("Programs", cascade="save-update, delete-orphan")
     user_id = Column(Integer,
                      ForeignKey('users.id'), nullable=False, default=1)
     users = relationship(Users)
+    users = relationship("Users", cascade="save-update, delete-orphan")
 
     @property
     def serialize(self):
